@@ -206,10 +206,16 @@ public class LinkedFilesEditorViewModel extends AbstractEditorViewModel {
                 .onRunning(() -> fulltextLookupInProgress.setValue(true))
                 .onFinished(() -> fulltextLookupInProgress.setValue(false))
                 .onSuccess(url -> {
-                    if (url.isPresent()) {
-                        addFromURL(url.get());
-                    } else {
-                        dialogService.notify(Localization.lang("No full text document found"));
+                    Optional<String> urlField = entry.getField(StandardField.URL);
+                    if (urlField.isPresent()) {
+                        try {
+                            URL urlx = new URL(urlField.get());
+                            addFromURL(urlx);
+                        } catch (MalformedURLException exception) {
+                            dialogService.showErrorDialogAndWait(
+                                    Localization.lang("Invalid URL"),
+                                    exception);
+                        }
                     }
                 })
                 .executeWith(taskExecutor);
@@ -218,6 +224,7 @@ public class LinkedFilesEditorViewModel extends AbstractEditorViewModel {
     public void addFromURL() {
         String clipText = ClipBoardManager.getContents();
         String urlField = entry.getField(StandardField.URL).orElse("");
+//        Optional<String> urlField = entry.getField(StandardField.URL);
         Optional<String> urlText;
         if (clipText.startsWith("http://") || clipText.startsWith("https://") || clipText.startsWith("ftp://")) {
             urlText = dialogService.showInputDialogWithDefaultAndWait(
