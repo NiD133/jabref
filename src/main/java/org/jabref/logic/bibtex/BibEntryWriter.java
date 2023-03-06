@@ -25,6 +25,7 @@ import org.jabref.model.entry.field.BibField;
 import org.jabref.model.entry.field.Field;
 import org.jabref.model.entry.field.InternalField;
 import org.jabref.model.strings.StringUtil;
+import org.jabref.preferences.PreferencesService;
 
 import org.slf4j.LoggerFactory;
 

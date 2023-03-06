@@ -51,6 +51,8 @@ import org.jabref.model.database.BibDatabaseMode;
 import org.jabref.model.entry.BibEntry;
 import org.jabref.model.entry.field.Field;
 import org.jabref.model.util.FileUpdateMonitor;
+import org.jabref.preferences.PreferencesService;
+import org.jabref.preferences.FilePreferences;
 
 import de.saxsys.mvvmfx.utils.validation.ObservableRuleBasedValidator;
 import de.saxsys.mvvmfx.utils.validation.ValidationMessage;
@@ -75,6 +77,8 @@ public class SourceTab extends EntryEditorTab {
     private Optional<Pattern> searchHighlightPattern = Optional.empty();
     private final KeyBindingRepository keyBindingRepository;
     private CodeArea codeArea;
+    private PreferencesService preferencesService;
+    private FilePreferences filePreferences;
 
     private BibEntry previousEntry;
 
@@ -98,7 +102,7 @@ public class SourceTab extends EntryEditorTab {
         }
     }
 
-    public SourceTab(BibDatabaseContext bibDatabaseContext, CountingUndoManager undoManager, FieldWriterPreferences fieldWriterPreferences, ImportFormatPreferences importFormatPreferences, FileUpdateMonitor fileMonitor, DialogService dialogService, StateManager stateManager, KeyBindingRepository keyBindingRepository) {
+    public SourceTab(BibDatabaseContext bibDatabaseContext, CountingUndoManager undoManager, FieldWriterPreferences fieldWriterPreferences, ImportFormatPreferences importFormatPreferences, FileUpdateMonitor fileMonitor, DialogService dialogService, StateManager stateManager, KeyBindingRepository keyBindingRepository, FilePreferences filePreferences) {
         this.mode = bibDatabaseContext.getMode();
         this.setText(Localization.lang("%0 source", mode.getFormattedName()));
         this.setTooltip(new Tooltip(Localization.lang("Show/edit %0 source", mode.getFormattedName())));
@@ -110,6 +114,7 @@ public class SourceTab extends EntryEditorTab {
         this.dialogService = dialogService;
         this.stateManager = stateManager;
         this.keyBindingRepository = keyBindingRepository;
+        this.filePreferences = filePreferences;
 
         stateManager.activeSearchQueryProperty().addListener((observable, oldValue, newValue) -> {
             searchHighlightPattern = newValue.flatMap(SearchQuery::getPatternForWords);
@@ -134,7 +139,16 @@ public class SourceTab extends EntryEditorTab {
         BibWriter bibWriter = new BibWriter(writer, OS.NEWLINE);
         FieldWriter fieldWriter = FieldWriter.buildIgnoreHashes(fieldWriterPreferences);
         new BibEntryWriter(fieldWriter, Globals.entryTypesManager).write(entry, bibWriter, type);
-        return writer.toString();
+        String x = writer.toString();
+        String y = filePreferences.getUser();
+        System.out.println(y);
+        String replace = "comment-" + y;
+        if (x.contains("comment")) {
+            x = x.replaceAll("comment", replace);
+        }
+        System.out.println(x);
+        // return writer.toString();
+        return x;
     }
 
     /* Work around for different input methods.

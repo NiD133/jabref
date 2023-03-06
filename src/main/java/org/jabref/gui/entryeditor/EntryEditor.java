@@ -261,7 +261,7 @@ public class EntryEditor extends BorderPane {
 
         // General fields from preferences
         for (Map.Entry<String, Set<Field>> tab : entryEditorPreferences.getEntryEditorTabList().entrySet()) {
-            entryEditorTabs.add(new UserDefinedFieldsTab(tab.getKey(), tab.getValue(), databaseContext, libraryTab.getSuggestionProviders(), undoManager, dialogService, preferencesService, stateManager, themeManager, libraryTab.getIndexingTaskManager(), taskExecutor, journalAbbreviationRepository));
+            entryEditorTabs.add(new UserDefinedFieldsTab(tab.getKey() + "test", tab.getValue(), databaseContext, libraryTab.getSuggestionProviders(), undoManager, dialogService, preferencesService, stateManager, themeManager, libraryTab.getIndexingTaskManager(), taskExecutor, journalAbbreviationRepository));
         }
 
         // Special tabs
@@ -278,7 +278,8 @@ public class EntryEditor extends BorderPane {
                 fileMonitor,
                 dialogService,
                 stateManager,
-                keyBindingRepository);
+                keyBindingRepository,
+                preferencesService.getFilePreferences());
         entryEditorTabs.add(sourceTab);
 
         // LaTeX citations tab
