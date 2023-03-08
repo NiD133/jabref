@@ -127,9 +127,10 @@ public class EntryEditor extends BorderPane {
             EntryEditorTab activeTab = (EntryEditorTab) tab;
             if (activeTab != null) {
                 activeTab.notifyAboutFocus(entry);
+                activeTab.checkComment(entry, preferencesService.getFilePreferences());
             }
         });
-
+        handleTabSelectionChange();
         setupKeyBindings();
 
         this.tabs = createTabs();
@@ -261,7 +262,7 @@ public class EntryEditor extends BorderPane {
 
         // General fields from preferences
         for (Map.Entry<String, Set<Field>> tab : entryEditorPreferences.getEntryEditorTabList().entrySet()) {
-            entryEditorTabs.add(new UserDefinedFieldsTab(tab.getKey() + "test", tab.getValue(), databaseContext, libraryTab.getSuggestionProviders(), undoManager, dialogService, preferencesService, stateManager, themeManager, libraryTab.getIndexingTaskManager(), taskExecutor, journalAbbreviationRepository));
+            entryEditorTabs.add(new UserDefinedFieldsTab(tab.getKey(), tab.getValue(), databaseContext, libraryTab.getSuggestionProviders(), undoManager, dialogService, preferencesService, stateManager, themeManager, libraryTab.getIndexingTaskManager(), taskExecutor, journalAbbreviationRepository));
         }
 
         // Special tabs
@@ -278,8 +279,7 @@ public class EntryEditor extends BorderPane {
                 fileMonitor,
                 dialogService,
                 stateManager,
-                keyBindingRepository,
-                preferencesService.getFilePreferences());
+                keyBindingRepository);
         entryEditorTabs.add(sourceTab);
 
         // LaTeX citations tab
@@ -424,5 +424,27 @@ public class EntryEditor extends BorderPane {
 
     public void previousPreviewStyle() {
         this.entryEditorTabs.forEach(EntryEditorTab::previousPreviewStyle);
+    }
+
+    public boolean checkForFieldOnTabChange() {
+        Set<Field> set1 = entry.getFields();
+        for (Field s : set1) {
+            if (s.getName().equals("comment")) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void handleTabSelectionChange() {
+        tabbed.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
+            if (newTab.getText().equals("Comments")) {
+                if (checkForFieldOnTabChange()) {
+                    System.out.println("111111111");
+                } else {
+                    System.out.println("9999999");
+                }
+            }
+        });
     }
 }

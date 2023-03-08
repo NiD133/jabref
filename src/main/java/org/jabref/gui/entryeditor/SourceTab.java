@@ -102,7 +102,7 @@ public class SourceTab extends EntryEditorTab {
         }
     }
 
-    public SourceTab(BibDatabaseContext bibDatabaseContext, CountingUndoManager undoManager, FieldWriterPreferences fieldWriterPreferences, ImportFormatPreferences importFormatPreferences, FileUpdateMonitor fileMonitor, DialogService dialogService, StateManager stateManager, KeyBindingRepository keyBindingRepository, FilePreferences filePreferences) {
+    public SourceTab(BibDatabaseContext bibDatabaseContext, CountingUndoManager undoManager, FieldWriterPreferences fieldWriterPreferences, ImportFormatPreferences importFormatPreferences, FileUpdateMonitor fileMonitor, DialogService dialogService, StateManager stateManager, KeyBindingRepository keyBindingRepository) {
         this.mode = bibDatabaseContext.getMode();
         this.setText(Localization.lang("%0 source", mode.getFormattedName()));
         this.setTooltip(new Tooltip(Localization.lang("Show/edit %0 source", mode.getFormattedName())));
@@ -114,7 +114,6 @@ public class SourceTab extends EntryEditorTab {
         this.dialogService = dialogService;
         this.stateManager = stateManager;
         this.keyBindingRepository = keyBindingRepository;
-        this.filePreferences = filePreferences;
 
         stateManager.activeSearchQueryProperty().addListener((observable, oldValue, newValue) -> {
             searchHighlightPattern = newValue.flatMap(SearchQuery::getPatternForWords);
@@ -140,15 +139,7 @@ public class SourceTab extends EntryEditorTab {
         FieldWriter fieldWriter = FieldWriter.buildIgnoreHashes(fieldWriterPreferences);
         new BibEntryWriter(fieldWriter, Globals.entryTypesManager).write(entry, bibWriter, type);
         String x = writer.toString();
-        String y = filePreferences.getUser();
-        System.out.println(y);
-        String replace = "comment-" + y;
-        if (x.contains("comment")) {
-            x = x.replaceAll("comment", replace);
-        }
-        System.out.println(x);
-        // return writer.toString();
-        return x;
+        return writer.toString();
     }
 
     /* Work around for different input methods.
