@@ -127,7 +127,7 @@ public class EntryEditor extends BorderPane {
             EntryEditorTab activeTab = (EntryEditorTab) tab;
             if (activeTab != null) {
                 activeTab.notifyAboutFocus(entry);
-                activeTab.checkComment(entry, preferencesService.getFilePreferences());
+                activeTab.checkComment(entry, preferencesService.getOwnerPreferences());
             }
         });
         handleTabSelectionChange();
@@ -427,9 +427,9 @@ public class EntryEditor extends BorderPane {
     }
 
     public boolean checkForFieldOnTabChange() {
-        Set<Field> set1 = entry.getFields();
-        for (Field s : set1) {
-            if (s.getName().equals("comment")) {
+        Set<Field> fields = entry.getFields();
+        for (Field field : fields) {
+            if (field.getName().equals("comment")) {
                 return true;
             }
         }
@@ -439,11 +439,7 @@ public class EntryEditor extends BorderPane {
     private void handleTabSelectionChange() {
         tabbed.getSelectionModel().selectedItemProperty().addListener((observable, oldTab, newTab) -> {
             if (newTab.getText().equals("Comments")) {
-                if (checkForFieldOnTabChange()) {
-                    System.out.println("111111111");
-                } else {
-                    System.out.println("9999999");
-                }
+                System.out.println("Move to the comment tab");
             }
         });
     }

@@ -1,14 +1,12 @@
 package org.jabref.gui.entryeditor;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Set;
 
 import javafx.scene.control.Tab;
 
+import org.jabref.logic.preferences.OwnerPreferences;
 import org.jabref.model.entry.BibEntry;
 import org.jabref.model.entry.field.Field;
-import org.jabref.model.entry.field.FieldProperty;
 import org.jabref.model.entry.field.StandardField;
 import org.jabref.model.entry.field.UnknownCommentField;
 import org.jabref.model.entry.types.EntryType;
@@ -55,35 +53,43 @@ public abstract class EntryEditorTab extends Tab {
         handleFocus();
     }
 
-    public void checkComment(BibEntry entry, FilePreferences filePreferences) {
+    public void checkComment(BibEntry entry, OwnerPreferences ownerPreferences) {
         currentEntry = entry;
-        String y = filePreferences.getUser();
-        String currentComment = "comment-" + y;
-//        UnknownCommentField commentA = new UnknownCommentField("johndoe");
-//        UnknownCommentField commentB = new UnknownCommentField("janedoe");
-//        currentEntry.setField(commentA, "This is comment a");
-//        currentEntry.setField(commentB, "This is comment b");
-        System.out.println("Switched to entry: " + currentEntry.getCitationKey());
-        List<String> commentList = new ArrayList<>();
+        String currentUser = "comment-" + ownerPreferences.getDefaultOwner();
+        String currentUser1 = "-" + ownerPreferences.getDefaultOwner();
+        String commentValue = currentEntry.getField(StandardField.COMMENT).orElse("");
         Set<Field> fields = currentEntry.getFields();
-        if (entry.hasField(StandardField.COMMENT)) {
-            for (Field field:fields) {
-                if (field instanceof UnknownCommentField) {
-                    UnknownCommentField unknownField = (UnknownCommentField) field;
-                    String name = unknownField.getName();
-                    if (name.equals(currentComment)) {
-                        System.out.println("Continue working on the comment!");
-                    }
-                } else {
-                    System.out.println("Create a new user comment!");
+        for (Field field:fields) {
+            if (field instanceof UnknownCommentField) {
+                UnknownCommentField unknownField = (UnknownCommentField) field;
+                String name = unknownField.getName();
+                if (name.equals(currentUser)) {
+                    System.out.println("Continue working on the comment!");
                 }
+            } else {
+                System.out.println("Create a new user comment!" + currentUser);
+                UnknownCommentField myCommentField = new UnknownCommentField(currentUser1);
+//                currentEntry.clearField(StandardField.COMMENT);
+                currentEntry.setField(myCommentField, commentValue);
             }
-        } else {
-            System.out.println("Create the first user comment!");
         }
-        Set<FieldProperty> commentSet = StandardField.COMMENT.getProperties();
-        System.out.println(commentSet);
+//        if (entry.hasField(StandardField.COMMENT)) {
+//            for (Field field:fields) {
+//                if (field instanceof UnknownCommentField) {
+//                    UnknownCommentField unknownField = (UnknownCommentField) field;
+//                    String name = unknownField.getName();
+//                    if (name.equals(currentComment)) {
+//                        System.out.println("Continue working on the comment!");
+//                    }
+//                } else {
+//                    System.out.println("Create a new user comment!");
+//                }
+//            }
+//        } else {
+//            System.out.println("Create the first user comment!");
+//        }
     }
+
     /**
      * Switch to next Preview style - should be overriden if a EntryEditorTab is actually showing a preview
      */
