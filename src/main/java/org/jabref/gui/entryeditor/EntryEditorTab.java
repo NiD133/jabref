@@ -68,9 +68,9 @@ public abstract class EntryEditorTab extends Tab {
                 }
             } else {
                 System.out.println("Create a new user comment!" + currentUser);
-                UnknownCommentField myCommentField = new UnknownCommentField(currentUser1);
+//                UnknownCommentField myCommentField = new UnknownCommentField(currentUser1);
 //                currentEntry.clearField(StandardField.COMMENT);
-                currentEntry.setField(myCommentField, commentValue);
+//                currentEntry.setField(myCommentField, commentValue);
             }
         }
 //        if (entry.hasField(StandardField.COMMENT)) {

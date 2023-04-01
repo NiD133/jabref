@@ -9,7 +9,7 @@ public class UnknownCommentField implements Field {
     private final Set<FieldProperty> properties;
 
     public UnknownCommentField(String username) {
-        this.name = "comment" + username;
+        this.name = "comment-" + username;
         this.properties = EnumSet.of(FieldProperty.COMMENT);
     }
 
