@@ -56,38 +56,29 @@ public abstract class EntryEditorTab extends Tab {
     public void checkComment(BibEntry entry, OwnerPreferences ownerPreferences) {
         currentEntry = entry;
         String currentUser = "comment-" + ownerPreferences.getDefaultOwner();
-        String currentUser1 = "-" + ownerPreferences.getDefaultOwner();
-        String commentValue = currentEntry.getField(StandardField.COMMENT).orElse("");
+
         Set<Field> fields = currentEntry.getFields();
-        for (Field field:fields) {
+        boolean userCommentExists = false;
+
+        for (Field field : fields) {
             if (field instanceof UnknownCommentField) {
                 UnknownCommentField unknownField = (UnknownCommentField) field;
                 String name = unknownField.getName();
                 if (name.equals(currentUser)) {
+                    userCommentExists = true;
                     System.out.println("Continue working on the comment!");
+                    break;
                 }
-            } else {
-                System.out.println("Create a new user comment!" + currentUser);
-//                UnknownCommentField myCommentField = new UnknownCommentField(currentUser1);
-//                currentEntry.clearField(StandardField.COMMENT);
-//                currentEntry.setField(myCommentField, commentValue);
             }
         }
-//        if (entry.hasField(StandardField.COMMENT)) {
-//            for (Field field:fields) {
-//                if (field instanceof UnknownCommentField) {
-//                    UnknownCommentField unknownField = (UnknownCommentField) field;
-//                    String name = unknownField.getName();
-//                    if (name.equals(currentComment)) {
-//                        System.out.println("Continue working on the comment!");
-//                    }
-//                } else {
-//                    System.out.println("Create a new user comment!");
-//                }
-//            }
-//        } else {
-//            System.out.println("Create the first user comment!");
-//        }
+
+        if (!userCommentExists) {
+            System.out.println("Create a new user comment: " + currentUser);
+            UnknownCommentField myCommentField = new UnknownCommentField(currentUser);
+            String commentValue = currentEntry.getField(StandardField.COMMENT).orElse("");
+            currentEntry.clearField(StandardField.COMMENT);
+            currentEntry.setField(myCommentField, commentValue);
+        }
     }
 
     /**
